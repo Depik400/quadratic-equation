@@ -1,9 +1,12 @@
 {
-  "dependencies": {
-    "chalk": "^5.0.0",
-    "cluster": "^0.7.7",
-    "os": "^0.1.2",
-    "worker-threads": "^1.0.0"
-  },
-  "type": "module"
+    "dependencies": {
+        "chalk": "^5.0.0",
+        "cluster": "^0.7.7",
+        "os": "^0.1.2",
+        "worker-threads": "^1.0.0"
+    },
+    "type": "commonjs",
+    "devDependencies": {
+        "@types/node": "^17.0.21"
+    }
 }
