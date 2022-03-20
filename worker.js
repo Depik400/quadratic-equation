@@ -102,17 +102,9 @@ function rootsSumSolveNonException(args) {
 
 function wrapper(func) {
     let sum = 0;
-    let countForWorkers = 0;
-    let count = workerData.count;
-    let leftover = count % workerData.countOfWorkers;
-    if (leftover != 0) {
-        count = count + (workerData.countOfWorkers - leftover);
-    }
-    countForWorkers = count / workerData.countOfWorkers;
     let start_time = performance.now();
     for (
-        let i = workerData.id * countForWorkers; i < (workerData.id - 1 + 2) * countForWorkers; i++
-    ) {
+        let i = workerData.left; i < workerData.right && i < workerData.count; i++) {
         if (i >= workerData.count) {
             break;
         }

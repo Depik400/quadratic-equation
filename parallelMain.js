@@ -2,36 +2,50 @@ import { Worker } from "worker_threads";
 import chalk from "chalk";
 import os from "os";
 
+function overs(count, id, countOfWorkers) {
+    let leftover = count % countOfWorkers;
+    if (leftover != 0) {
+        count = count + (countOfWorkers - leftover);
+    }
+    let countForWorkers = count / countOfWorkers;
+    return {
+        left: id * countForWorkers,
+        right: ((id - 1 + 2) * countForWorkers) - 1
+    }
+}
+
 function run(count, type) {
     let countOfWorkers = os.cpus().length;
     return new Promise((resolve, reject) => {
-        let workers = [];
         let times = [];
         let sums = [];
-        let counter = 0;
+        let exitedWorkers = 0;
+
+        let msgHandler = (msg) => {
+            sums.push(msg.sum);
+            times.push(msg.time);
+            exitedWorkers++;
+            if (exitedWorkers == countOfWorkers) {
+                resolve({
+                    sum: sums.reduce((a, b) => a + b),
+                    time: times.reduce((a, b) => a + b) / countOfWorkers,
+                    count: count,
+                });
+            }
+        }
+
         for (let i = 0; i < countOfWorkers; i++) {
+            let borders = overs(count, i, countOfWorkers);
             let settings = {
                 workerData: {
-                    count: count,
-                    id: i,
+                    left: borders.left,
+                    right: borders.right,
                     type: type,
-                    countOfWorkers: countOfWorkers,
+                    count: count,
                 },
             };
             let worker = new Worker("./worker.js", settings);
-            worker.on("message", (msg) => {
-                sums.push(msg.sum);
-                times.push(msg.time);
-                counter++;
-                if (counter == workers.length) {
-                    resolve({
-                        sum: sums.reduce((a, b) => a + b),
-                        time: times.reduce((a, b) => a + b) / countOfWorkers,
-                        count: count,
-                    });
-                }
-            });
-            workers.push(worker);
+            worker.on("message", msgHandler);
         }
     });
 }
@@ -41,8 +55,8 @@ async function print(from, result) {
 }
 
 async function main() {
-    let from = 4096;
-    let to = 512 * from;
+    let from = 32768;
+    let to = 512 * 4096;
     console.log(chalk.bgBlue('Обычная'));
     for (let i = from; i <= to; i *= 2) {
         let result = await run(i, "default");
