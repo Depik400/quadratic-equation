@@ -5,7 +5,7 @@
         "os": "^0.1.2",
         "worker-threads": "^1.0.0"
     },
-    "type": "commonjs",
+    "type": "module",
     "devDependencies": {
         "@types/node": "^17.0.21"
     }
