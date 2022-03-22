@@ -61,31 +61,31 @@ function printArr(arr) {
 async function main() {
     let from = 32768;
     let to = 512 * 4096;
-    let arr = [];
+    //let arr = [];
     console.log(chalk.bgBlue('Обычная'));
     for (let i = from; i <= to; i *= 2) {
         let result = await run(i, "default");
-        arr.push(result.time);
+        //  arr.push(result.time);
         print(i, result);
     }
-    printArr(arr);
-    arr = [];
+    //printArr(arr);
+    // arr = [];
     console.log(chalk.bgBlue('Только исключения'));
     for (let i = from; i <= to; i *= 2) {
         let result = await run(i, "onlyException");
-        arr.push(result.time);
+        //    arr.push(result.time);
         print(i, result);
     }
-    printArr(arr);
-    arr = [];
+    //  printArr(arr);
+    //   arr = [];
     console.log(chalk.bgBlue('Без исключений'));
     for (let i = from; i <= to; i *= 2) {
         let result = await run(i, "withoutException");
         arr.push(result.time);
         print(i, result);
     }
-    printArr(arr);
-    arr = [];
+    //printArr(arr);
+    // arr = [];
 }
 
 main();

@@ -123,43 +123,43 @@ async function execute(count, func) {
     return (end_time - start_time);
 }
 
-function printArr(arr) {
-    console.log("Для копирования - " + arr.reduce((a, b) => a + "\t" + b))
-}
+// function printArr(arr) {
+//     console.log("Для копирования - " + arr.reduce((a, b) => a + "\t" + b))
+// }
 
 async function main() {
     const from = 32768;
     const to = 512 * 4096;
-    let tempArr = [];
+    //let tempArr = [];
     console.log(chalk.bgBlue.bold("Обычная"));
     for (let i = from; i <= to; i *= 2) {
         //console.time(i);
         let time = await execute(i, rootsSumSolve);
         //console.timeEnd(i);
-        tempArr.push(time);
+        //tempArr.push(time);
         console.log(`${i}\t${(time)}`)
     }
-    printArr(tempArr);
-    tempArr = [];
+    //printArr(tempArr);
+    //tempArr = [];
     console.log(chalk.bgBlue.bold("Только исключения"));
     for (let i = from; i <= to; i *= 2) {
         //console.time(i);
         let time = await execute(i, rootsSumSolveException);
         // console.timeEnd(i);
-        tempArr.push(time);
+        // tempArr.push(time);
         console.log(`${i}\t${time}`)
     }
-    printArr(tempArr);
-    tempArr = [];
+    // printArr(tempArr);
+    // tempArr = [];
     console.log(chalk.bgBlue.bold("Без исключений"));
     for (let i = from; i <= to; i *= 2) {
         //console.time(i);
         let time = await execute(i, rootsSumSolveNonException);
         // console.timeEnd(i);
-        tempArr.push(time);
+        //tempArr.push(time);
         console.log(`${i}\t${time}`)
     }
-    printArr(tempArr);
+    // printArr(tempArr);
 }
 
 main();
