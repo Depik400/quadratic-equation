@@ -30,7 +30,7 @@ function solver(args) {
         return [-args.c / args.b];
     }
 
-    let D = Math.pow(args.b, 2) - args.a * args.c * 4;
+    let D = Math.pow(args.b, 2) - (args.a * args.c * 4);
 
     if (isEqual(D, 0)) {
         return [-args.b / (2 * args.a)];
@@ -39,7 +39,7 @@ function solver(args) {
         return [];
     }
 
-    return [-args.b + Math.sqrt(D) / (2 * args.a), -args.b - Math.sqrt(D) / (2 * args.a), ];
+    return [-args.b + Number(Math.sqrt(D)) / (2 * args.a), -args.b - Number(Math.sqrt(D)) / (2 * args.a), ];
 }
 
 function solve(args) {
@@ -104,7 +104,7 @@ function wrapper(func) {
     let sum = 0;
     let start_time = performance.now();
     for (
-        let i = workerData.left; i < workerData.right && i < workerData.count; i++) {
+        let i = workerData.left; i <= workerData.right && i <= workerData.count; i++) {
         if (i >= workerData.count) {
             break;
         }

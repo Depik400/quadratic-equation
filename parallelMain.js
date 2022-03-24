@@ -81,7 +81,7 @@ async function main() {
     console.log(chalk.bgBlue('Без исключений'));
     for (let i = from; i <= to; i *= 2) {
         let result = await run(i, "withoutException");
-        arr.push(result.time);
+        // arr.push(result.time);
         print(i, result);
     }
     //printArr(arr);
