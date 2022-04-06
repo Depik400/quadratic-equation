@@ -1,6 +1,8 @@
 import { workerData, parentPort } from "worker_threads";
 import { performance } from 'perf_hooks';
 
+const sqrt = Math.sqrt;
+
 function isEqual(a, b, e = 0.00001) {
     return Math.abs(a - b) < e;
 }
@@ -13,8 +15,11 @@ function argsEqualsNull(a, b, c) {
 }
 
 function sumRoots(result) {
-    if (result.length == 0) return 0;
-    return result.reduce((a, b) => a + b);
+    if (result.length == 0) return Number(0);
+    if (result.length == 1) return Number(result[0]);
+    let sum = 0;
+    result.forEach((item) => sum += item - 1 + 1);
+    return sum;
 }
 
 function rootException(roots) {
@@ -22,24 +27,27 @@ function rootException(roots) {
 }
 
 function solver(args) {
-    if (isEqual(args.a, 0) && isEqual(args.b, 0)) {
+
+    if(isEqual(args.a, 0) && isEqual(args.b,0))
         return [];
-    }
 
     if (isEqual(args.a, 0)) {
-        return [-args.c / args.b];
+        return [0,(-args.c) / args.b];
     }
-
-    let D = Math.pow(args.b, 2) - (args.a * args.c * 4);
+    let sqrB = args.b * args.b;
+    let D = sqrB - (args.a * args.c * 4);
 
     if (isEqual(D, 0)) {
-        return [-args.b / (2 * args.a)];
+        return [0,-args.b / (2 * args.a)];
     }
     if (D < 0) {
         return [];
     }
 
-    return [-args.b + Number(Math.sqrt(D)) / (2 * args.a), -args.b - Number(Math.sqrt(D)) / (2 * args.a), ];
+    return [
+        (-args.b + sqrt(D)) / (2 * args.a),
+        (-args.b - sqrt(D)) / (2 * args.a),
+    ];
 }
 
 function solve(args) {
@@ -70,8 +78,14 @@ function nonExceptionSolve(args) {
 function rootsSumSolve(args) {
     try {
         let result = solve(args);
-        return sumRoots(result);
+
+        let sum = sumRoots(result);
+        return sum;
     } catch (err) {
+
+        if (err == "ArgsIsNull") {
+            return 0;
+        }
         return 0;
     }
 }

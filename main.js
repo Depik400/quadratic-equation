@@ -117,7 +117,7 @@ function rootsSumSolveNonException(args) {
 
 function execute(count, func) {
     let sum = 0;
-    global.gc();
+    //global.gc();
     let start_time = performance.now();
     for (let i = 0; i < count; i++) {
         let args = {
