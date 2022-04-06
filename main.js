@@ -1,5 +1,7 @@
 import chalk from "chalk";
 import { performance } from 'perf_hooks';
+import fs from "fs";
+
 const sqrt = Math.sqrt;
 
 function isEqual(a, b, e = 0.00001) {
@@ -14,10 +16,10 @@ function argsEqualsNull(a, b, c) {
 }
 
 function sumRoots(result) {
-    if (result.length == 0) return 0;
-    if (result.length == 1) return result[0];
+    if (result.length == 0) return Number(0);
+    if (result.length == 1) return Number(result[0]);
     let sum = 0;
-    result.forEach((item) => sum += item);
+    result.forEach((item) => sum += item - 1 + 1);
     return sum;
 }
 
@@ -26,18 +28,18 @@ function rootException(roots) {
 }
 
 function solver(args) {
-    if (isEqual(args.a, 0) && isEqual(args.b, 0)) {
+
+    if(isEqual(args.a, 0) && isEqual(args.b,0))
         return [];
-    }
 
     if (isEqual(args.a, 0)) {
-        return [-args.c / args.b];
+        return [0,(-args.c) / args.b];
     }
-    let sqrB = args.b ** 2;
+    let sqrB = args.b * args.b;
     let D = sqrB - (args.a * args.c * 4);
 
     if (isEqual(D, 0)) {
-        return [-args.b / (2 * args.a)];
+        return [0,-args.b / (2 * args.a)];
     }
     if (D < 0) {
         return [];
@@ -71,11 +73,6 @@ function nonExceptionSolve(args) {
         return { array: [], status: false };
     }
     let result = solver(args);
-    /*
-    if (result.length == 0) {
-      return { array: [], status: true };
-    }
-    */
     return { array: result, status: true };
 }
 
@@ -84,8 +81,7 @@ function rootsSumSolve(args) {
         let result = solve(args);
 
         let sum = sumRoots(result);
-        if (!isNaN(sum)) return sum;
-        throw new Error('ArgsIsNull');
+        return sum;
     } catch (err) {
 
         if (err == "ArgsIsNull") {
@@ -121,6 +117,7 @@ function rootsSumSolveNonException(args) {
 
 function execute(count, func) {
     let sum = 0;
+    global.gc();
     let start_time = performance.now();
     for (let i = 0; i < count; i++) {
         let args = {
@@ -128,50 +125,31 @@ function execute(count, func) {
             b: ((i % 200) - 100) / 22.0,
             c: ((i % 20) - 10) / 11.0,
         };
-        sum += func(args);
+        sum += func(args) ;
     }
-    console.log(sum);
     let end_time = performance.now();
+    fs.appendFile('sum.txt',String(sum),(err) => {});
     return (end_time - start_time);
 }
-
-// function printArr(arr) {
-//     console.log("Для копирования - " + arr.reduce((a, b) => a + "\t" + b))
-// }
 
 async function main() {
     const from = 32768;
     const to = 512 * 4096;
-    //let tempArr = [];
     console.log(chalk.bgBlue.bold("Обычная"));
-    for (let i = from; i <= to; i *= 2) {
-        //console.time(i);
+    for (let i = to; i >= from; i /= 2) {
         let time = execute(i, rootsSumSolve);
-        //console.timeEnd(i);
-        //tempArr.push(time);
         console.log(`${i}\t${(time)}`)
     }
-    //printArr(tempArr);
-    //tempArr = [];
     console.log(chalk.bgBlue.bold("Только исключения"));
-    for (let i = from; i <= to; i *= 2) {
-        //console.time(i);
+    for (let i = to; i >= from; i /= 2) {
         let time = execute(i, rootsSumSolveException);
-        // console.timeEnd(i);
-        // tempArr.push(time);
         console.log(`${i}\t${time}`)
     }
-    // printArr(tempArr);
-    // tempArr = [];
     console.log(chalk.bgBlue.bold("Без исключений"));
-    for (let i = from; i <= to; i *= 2) {
-        //console.time(i);
+    for (let i = to; i >= from; i /= 2) {
         let time = execute(i, rootsSumSolveNonException);
-        // console.timeEnd(i);
-        //tempArr.push(time);
         console.log(`${i}\t${time}`)
     }
-    // printArr(tempArr);
 }
 
 main();
