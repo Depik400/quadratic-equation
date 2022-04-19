@@ -15,7 +15,7 @@ function overs(count, id, countOfWorkers) {
 }
 
 function run(count, type) {
-    let countOfWorkers = os.cpus().length;
+    let countOfWorkers = 4;
     return new Promise((resolve, reject) => {
         let times = [];
         let sums = [];
@@ -62,12 +62,16 @@ async function main() {
     let from = 32768;
     let to = 512 * 4096;
     //let arr = [];
+    let sum = 0;
     console.log(chalk.bgBlue('Обычная'));
     for (let i = from; i <= to; i *= 2) {
         let result = await run(i, "default");
         //  arr.push(result.time);
         print(i, result);
+        sum+=result.time;
     }
+    console.log('Суммарное время:',sum)
+    sum = 0;
     //printArr(arr);
     // arr = [];
     console.log(chalk.bgBlue('Только исключения'));
@@ -75,7 +79,10 @@ async function main() {
         let result = await run(i, "onlyException");
         //    arr.push(result.time);
         print(i, result);
+        sum+=result.time;
     }
+    console.log('Суммарное время:',sum)
+    sum = 0;
     //  printArr(arr);
     //   arr = [];
     console.log(chalk.bgBlue('Без исключений'));
@@ -83,7 +90,10 @@ async function main() {
         let result = await run(i, "withoutException");
         // arr.push(result.time);
         print(i, result);
+        sum+=result.time;
     }
+    console.log('Суммарное время:',sum)
+    sum = 0;
     //printArr(arr);
     // arr = [];
 }
